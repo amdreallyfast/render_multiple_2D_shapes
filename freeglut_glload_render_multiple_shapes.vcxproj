@@ -85,7 +85,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -144,11 +144,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GenerateShader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="OpenGlErrorHandling.cpp" />
+    <ClCompile Include="PrimitiveGeneration.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.frag" />
     <None Include="shader.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GenerateShader.h" />
+    <ClInclude Include="GeometryData.h" />
+    <ClInclude Include="OpenGlErrorHandling.h" />
+    <ClInclude Include="PrimitiveGeneration.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
