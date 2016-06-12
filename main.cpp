@@ -30,11 +30,6 @@
 #pragma comment(lib, "winmm.lib")               // Windows-specific; freeglut needs it
 #endif
 
-// for making program from shader collection
-#include <string>
-#include <fstream>
-#include <sstream>
-
 // for printf(...)
 #include <stdio.h>
 
@@ -43,15 +38,16 @@
 #include "GeometryData.h"
 #include "PrimitiveGeneration.h"
 
+// for moving the shapes around in window space
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 GLuint gProgramId;
 GeometryData gTriangle;
 GeometryData gBox;
 GeometryData gCircle;
 GLint gUniformLocation;
 
-
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
 
 void Init()
 {
@@ -65,10 +61,7 @@ void Init()
     glDepthRange(0.0f, 1.0f);
 
     gProgramId = GenerateShaderProgram();
-    //glm::mat4 m = glm::translate(glm::mat4(), glm::vec3(+0.25f, +0.25f, 0.0f));
-    //glm::mat4 m = glm::translate(glm::mat4(), glm::vec3(+0.0f, +0.0f, 0.0f));
     gUniformLocation = glGetUniformLocation(gProgramId, "translateMatrixWindowSpace");
-    //glUniformMatrix4fv(gUniformLocation, 1, GL_FALSE, glm::value_ptr(m));
 
     GenerateTriangle(&gTriangle);
 
