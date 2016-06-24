@@ -6,6 +6,17 @@
 #include <stdlib.h> // for rand()
 #include <time.h>
 
+/*-----------------------------------------------------------------------------------------------
+Description:
+    Generates three random floats on the range 0.0f - 1.0f and stores them in a glm::vec3 for
+    use in RGB or other red-green-blue color combinations (texture format and internal format can
+    be RGB, GBR, GRB, etc.).
+Parameters: None
+Returns:
+    A glm::vec3 with three random floats stuffed inside on the range 0.0f - 1.0f;
+Exception:  Safe
+Creator:    John Cox (6-12-2016)
+-----------------------------------------------------------------------------------------------*/
 static glm::vec3 RandomColor()
 {
     static bool firstTime = true;
@@ -22,6 +33,15 @@ static glm::vec3 RandomColor()
     return ret;
 }
 
+/*-----------------------------------------------------------------------------------------------
+Description:
+    Creates a (in window coordinates) 0.5 wide by 0.5 tall triangle.
+Parameters:
+    putDataHere     Self-explanatory.
+Returns:    None
+Exception:  Safe
+Creator:    John Cox (6-12-2016)
+-----------------------------------------------------------------------------------------------*/
 void GenerateTriangle(GeometryData *putDataHere)
 {
     // all points generated in window space
@@ -59,6 +79,15 @@ void GenerateTriangle(GeometryData *putDataHere)
     putDataHere->_drawStyle = GL_TRIANGLES;
 }
 
+/*-----------------------------------------------------------------------------------------------
+Description:
+    Creates a (in window coordinates) 0.5 wide by 0.5 tall square.
+Parameters:
+    putDataHere     Self-explanatory.
+Returns:    None
+Exception:  Safe
+Creator:    John Cox (6-12-2016)
+-----------------------------------------------------------------------------------------------*/
 void GenerateBox(GeometryData *putDataHere)
 {
     // all points generated in window space
@@ -100,7 +129,20 @@ void GenerateBox(GeometryData *putDataHere)
     putDataHere->_drawStyle = GL_TRIANGLES;
 }
 
-// Note: Algorithm courtesy of http://slabode.exofire.net/circle_draw.shtml .
+/*-----------------------------------------------------------------------------------------------
+Description:
+    Creates a 32-point, 0.25 radius (in window coordinates) circle.  That's good enough for this
+    barebones demo.
+
+    Note: I could have used sinf(...) and cosf(...) to create the points, but where's the fun in
+    that if I have a faster and obtuse algorithm :) ?  Algorithm courtesy of
+    http://slabode.exofire.net/circle_draw.shtml .
+Parameters:
+putDataHere     Self-explanatory.
+Returns:    None
+Exception:  Safe
+Creator:    John Cox (6-12-2016)
+-----------------------------------------------------------------------------------------------*/
 void GenerateCircle(GeometryData *putDataHere)
 {
     // a 32-point, 0.25 radius (window dimensions) circle will suffice for this demo
@@ -141,7 +183,17 @@ void GenerateCircle(GeometryData *putDataHere)
     putDataHere->_drawStyle = GL_TRIANGLES;
 }
 
-// program binding is required for vertex attributes
+/*-----------------------------------------------------------------------------------------------
+Description:
+    Generates a vertex buffer, index buffer, and vertex array object (contains vertex array 
+    attributes) for the provided geometry data.
+Parameters:
+    programId   Program binding is required for vertex attributes.
+    initThis    Self-explanatory.
+Returns:    None
+Exception:  Safe
+Creator:    John Cox (6-12-2016)
+-----------------------------------------------------------------------------------------------*/
 void InitializeGeometry(GLuint programId, GeometryData *initThis)
 {
     // must bind program or else the vertex arrays will either blow up or refer to a 

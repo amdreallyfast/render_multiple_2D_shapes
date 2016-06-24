@@ -42,13 +42,33 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
+// in a bigger program, this would be stored in some kind of shader storage
 GLuint gProgramId;
+
+// in a bigger program, geometry data would be stored in some kind of "scene" or in a renderer
+// or behind door number 3 so that collision boxes could get at the vertex data
 GeometryData gTriangle;
 GeometryData gBox;
 GeometryData gCircle;
+
+// in a bigger program, uniform locations would probably be stored in the same place as the 
+// shader programs
 GLint gUniformLocation;
 
 
+/*-----------------------------------------------------------------------------------------------
+Description:
+    Governs window creation, the initial OpenGL configuration (face culling, depth mask, even
+    though this is a 2D demo and that stuff won't be of concern), the creation of geometry, and
+    the creation of a texture.
+Parameters:
+    argc    (From main(...)) The number of char * items in argv.  For glut's initialization.
+    argv    (From main(...)) A collection of argument strings.  For glut's initialization.
+Returns:
+    False if something went wrong during initialization, otherwise true;
+Exception:  Safe
+Creator:    John Cox (3-7-2016)
+-----------------------------------------------------------------------------------------------*/
 void Init()
 {
     glEnable(GL_CULL_FACE);
@@ -72,9 +92,18 @@ void Init()
     InitializeGeometry(gProgramId, &gCircle);
 }
 
-//Called to update the display.
-//You should call glutSwapBuffers after all of your rendering to display what you rendered.
-//If you need continuous updates of the screen, call glutPostRedisplay() at the end of the function.
+/*-----------------------------------------------------------------------------------------------
+Description:
+    This is the rendering function.  It tells OpenGL to clear out some color and depth buffers,
+    to set up the data to draw, to draw than stuff, and to report any errors that it came across.
+    This is not a user-called function.
+
+    This function is registered with glutDisplayFunc(...) during glut's initialization.
+Parameters: None
+Returns:    None
+Exception:  Safe
+Creator:    John Cox (2-13-2016)
+-----------------------------------------------------------------------------------------------*/
 void Display()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -107,21 +136,57 @@ void Display()
 
     glUseProgram(0);
 
+    // tell the GPU to swap out the displayed buffer with the one that was just rendered
     glutSwapBuffers();
+
+    // tell glut to call this display() function again on the next iteration of the main loop
+    // Note: https://www.opengl.org/discussion_boards/showthread.php/168717-I-dont-understand-what-glutPostRedisplay()-does
+    // Also Note: This display() function will also be registered to run if the window is moved
+    // or if the viewport is resized.  If glutPostRedisplay() is not called, then as long as the
+    // window stays put and doesn't resize, display() won't be called again (tested with 
+    // debugging).
+    // Also Also Note: It doesn't matter where this is called in this function.  It sets a flag
+    // for glut's main loop and doesn't actually call the registered display function, but I 
+    // got into the habbit of calling it at the end.
     glutPostRedisplay();
 }
 
-//Called whenever the window is resized. The new window size is given, in pixels.
-//This is an opportunity to call glViewport or glScissor to keep up with the change in size.
+/*-----------------------------------------------------------------------------------------------
+Description:
+    Tell's OpenGL to resize the viewport based on the arguments provided.  This is an
+    opportunity to call glViewport or glScissor to keep up with the change in size.
+
+    This is not a user-called function.  It is registered with glutReshapeFunc(...) during
+    glut's initialization.
+Parameters:
+    w   The width of the window in pixels.
+    h   The height of the window in pixels.
+Returns:    None
+Exception:  Safe
+Creator:    John Cox (2-13-2016)
+-----------------------------------------------------------------------------------------------*/
 void Reshape(int w, int h)
 {
     glViewport(0, 0, w, h);
 }
 
-//Called whenever a key on the keyboard was pressed.
-//The key is given by the ''key'' parameter, which is in ASCII.
-//It's often a good idea to have the escape key (ASCII value 27) call glutLeaveMainLoop() to 
-//exit the program.
+/*-----------------------------------------------------------------------------------------------
+Description:
+    Executes when the user presses a key on the keyboard.
+    
+    This is not a user-called function.  It is registered with glutKeyboardFunc(...) during 
+    glut's initialization.
+
+    Note: Although the x and y arguments are for the mouse's current position, this function does
+    not respond to mouse presses.
+Parameters:
+    key     The ASCII code of the key that was pressed (ex: ESC key is 27)
+    x       The horizontal viewport coordinates of the mouse's current position.
+    y       The vertical window coordinates of the mouse's current position
+Returns:    None
+Exception:  Safe
+Creator:    John Cox (2-13-2016)
+-----------------------------------------------------------------------------------------------*/
 void Keyboard(unsigned char key, int x, int y)
 {
     // this statement is mostly to get ride of an "unreferenced parameter" warning
@@ -139,20 +204,42 @@ void Keyboard(unsigned char key, int x, int y)
     }
 }
 
-// I don't know what this does, but I've kept it around since early times, and this was the
-// comment given with it:
-//Called before FreeGLUT is initialized. It should return the FreeGLUT
-//display mode flags that you want to use. The initial value are the standard ones
-//used by the framework. You can modify it or just return you own set.
-//This function can also set the width/height of the window. The initial
-//value of these variables is the default, but you can change it.
-unsigned int Defaults(unsigned int displayMode, int &width, int &height) 
+/*-----------------------------------------------------------------------------------------------
+Description:
+    I don't know what this does, but I've kept it around since early times, and this was the
+    comment given with it:
+
+    "Called before FreeGLUT is initialized. It should return the FreeGLUT display mode flags
+    that you want to use. The initial value are the standard ones used by the framework. You can
+    modify it or just return you own set.  This function can also set the width/height of the
+    window. The initial value of these variables is the default, but you can change it."
+Parameters:
+    displayMode     ??
+    width           ??
+    height          ??
+Returns:
+    ??what??
+Exception:  Safe
+Creator:    John Cox (2-13-2016)
+-----------------------------------------------------------------------------------------------*/
+unsigned int Defaults(unsigned int displayMode, int &width, int &height)
 {
     // this statement is mostly to get ride of an "unreferenced parameter" warning
     printf("Defaults: width = %d, height = %d\n", width, height);
     return displayMode; 
 }
 
+/*-----------------------------------------------------------------------------------------------
+Description:
+    Program start and end.
+Parameters:
+    argc    The number of strings in argv.
+    argv    A pointer to an array of null-terminated, C-style strings.
+Returns:
+    0 if program ended well, which it always does or it crashes outright, so returning 0 is fine
+Exception:  Safe
+Creator:    John Cox (2-13-2016)
+-----------------------------------------------------------------------------------------------*/
 int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
